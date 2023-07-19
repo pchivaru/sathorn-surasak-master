@@ -107,8 +107,8 @@ class TraciEnv(gym.Env):
     def step(self, action):
         self.steps += 1
         reset = False
-
-        print('Current time:', self.sim.simulation.getTime())
+        
+        print(f'Current time: {self.sim.simulation.getTime()}, Trial: {self.trial_id}, Epoch: {self.eps_id}')
 
         if self.sim.simulation.getTime() >= 55000: #55000!!!
             reset = True
