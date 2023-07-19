@@ -6,6 +6,7 @@ import os
 import sys
 from gym import spaces
 if 'SUMO_HOME' in os.environ:
+    print(os.environ['SUMO_HOME'])
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
     sys.path.append(tools)
 else:
@@ -24,8 +25,6 @@ import numpy as np
 import pandas as pd
 
 import time
-
-path = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 OBS_SPACE = spaces.Box(low=-np.inf, high=np.inf, dtype=np.float32, shape=(20, 5, 1))
 ACT_SPACE = spaces.Discrete(C.NUM_ACTIONS)
@@ -72,12 +71,14 @@ class TraciEnv(gym.Env):
         self.action_space = ACT_SPACE
         self.steps = 0
         self.agent_type = None
+        self.colab = 0
+        self.path = None
 
     def open(self):
         self.env_id = str(self.trial_id) + '-' + str(self.eps_id)
-        copy_tree(path+'Data', 'Data'+self.env_id)
+        copy_tree(self.path+'Data', 'Data'+self.env_id)
 
-        demand = pd.read_csv(path + self.demand_file)
+        demand = pd.read_csv(self.path + self.demand_file)
 
         self.sim = SimThread.create_sim(self.sumoBinary, self.env_id, '')
         self.sim_intern = SimInternal(demand)
@@ -139,7 +140,7 @@ class TraciEnv(gym.Env):
         self.open()
         return self.get_state()
     
-    def set_params(self, state_mode, trial_id, eps_id, demand_file, rush_hour, dead_hour, render, agent_type):
+    def set_params(self, state_mode, trial_id, eps_id, demand_file, rush_hour, dead_hour, render, agent_type, colab):
         self.state_mode = state_mode
         self.trial_id = trial_id
         self.eps_id = eps_id
@@ -147,8 +148,15 @@ class TraciEnv(gym.Env):
         self.rush_hour = rush_hour
         self.dead_hour = dead_hour
         self.agent_type = agent_type
+        self.colab = colab
 
         if render: self.sumoBinary = checkBinary('sumo-gui')
+
+        if colab:
+            self.path='/content/sathorn-surasak-master/traci_env/traci_env/envs/'
+        else:
+            self.path = os.path.dirname(os.path.abspath(__file__)) + os.sep
+
        
     '''def render(self, mode='human'):
         self.sumoBinary = checkBinary('sumo-gui')

@@ -43,10 +43,7 @@ def run_sim(conn, intern, next_phase, actuation):
         
         intern.acted = True
         return
-
-    print('Warning')
-    print(actuation)
-    print(intern.current_phase)
+    
     if intern.conflict_red is not None:
         set_phase(conn, intern.conflict_red)
         intern.conflict_red_count += 1
@@ -122,7 +119,6 @@ def vehicle_generator(time, demand):  # time in seconds and demand as a list of 
 
 
 def set_phase(conn, indexes):
-    print('SET PHASE ACTIVATED')
     phases = [None] * 7 # why not 6??
 
     # Specify the green lanes in each phase

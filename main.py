@@ -15,6 +15,7 @@ def main():
     optParser.add_option("--trials", action="store", default='1', type='int', help="number of trials") #30
     optParser.add_option("--eps", action="store", default='1', type='int', help="number of episodes per trial") #40
     optParser.add_option("--procs", action="store", default='1', type='int', help="number of processors to use")
+    optParser.add_option("--colab", action="store", default='0', type='int', help="running in colab or not")
     options, args = optParser.parse_args()
     print(options)
 
@@ -26,16 +27,16 @@ def main():
         num_trials = options.trials
 
     if options.procs == 1:
-        run_trial(options.agent, options.file, num_eps, 0, render=True)
+        run_trial(options.agent, options.file, num_eps, 0, options.colab, render=False)
     else:
         pool = mp.Pool(processes=options.procs)
         for trial in range(num_trials):
-            pool.apply_async(run_trial, args=(options.agent, options.file, num_eps, trial))
+            pool.apply_async(run_trial, args=(options.agent, options.file, num_eps, trial, options.colab))
         pool.close()
         pool.join()
 
 
-def run_trial(agent_type, file, num_eps, trial, render=False):
+def run_trial(agent_type, file, num_eps, trial, colab, render=False):
     mode = 'raw'
     if agent_type == 'actu':
         agent = ActuatedAgent(shared.OBS_SPACE, 3)
@@ -47,7 +48,8 @@ def run_trial(agent_type, file, num_eps, trial, render=False):
     for ep_cnt in range(num_eps):
         env = gym.make('traci-v0') 
         
-        env.set_params(mode, trial, ep_cnt, shared.demands[file], shared.rush[file], shared.dead[file], render, agent_type)
+        env.set_params(mode, trial, ep_cnt, shared.demands[file],
+                        shared.rush[file], shared.dead[file], render, agent_type, colab)
         
         #print(env.demand_file)
         state, rew, reset = env.reset(), 0, False
