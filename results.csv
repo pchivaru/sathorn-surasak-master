@@ -1,2 +1,2 @@
-trial_id, eps_id, trips, missed_trips, loss, steps, rh_loss, dh_loss, max_delay, max_queue, agent_type
-0, 0, 81046, 2481, 137.44545690101967, 55001, 42.434274166385926, 27.40261535870669, 2039.48, 104.0, actu
+trial_id, eps_id, trips, missed_trips, loss, steps, rh_loss, dh_loss, max_delay, max_queue, CO_abs, CO2_abs, HC_abs, PMx_abs, NOx_abs, fuel_abs, elec_abs, agent_type
+0, 0, 1124, 190, 33.372197508896825, 1001, 0, 0, 161.65, 14.0, 5902.212154507124, 349745.80608002393, 34.00864610409252, 4.804369105871893, 129.95951336743792, 111554.89608936672, 0.0, actu

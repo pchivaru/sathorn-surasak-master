@@ -90,6 +90,7 @@ class TraciEnv(gym.Env):
     def close(self):
         self.sim.close()
         loss, loss_sq, trips, rh_loss, dh_loss, max_delay = self.get_delay('Data'+self.env_id+os.sep)
+        CO_abs, CO2_abs, HC_abs, PMx_abs, NOx_abs, fuel_abs, elec_abs = self.get_contamination('Data'+self.env_id+os.sep)
         missed_trips = self.sim_intern.vehNr - trips
         if missed_trips > 0:
             print('MISSED TRIPS')
@@ -100,7 +101,9 @@ class TraciEnv(gym.Env):
         with open("results.csv", "a+") as f:
             f.write(str(self.trial_id) + ', ' + str(self.eps_id) + ', ' + str(trips) + ', ' + str(missed_trips) + ', ' +
                     str(loss) + ', ' + str(self.steps) + ', ' + str(rh_loss) + ', ' + str(dh_loss) + ', ' +
-                    str(max_delay) + ', ' + str(max_queue) + ', ' + str(self.agent_type)+'\n')
+                    str(max_delay) + ', ' + str(max_queue) + ', '+ str(CO_abs) + ', ' + str(CO2_abs) + ', '+
+                    str(HC_abs)+', '+str(PMx_abs)+', '+str(NOx_abs)+', '+str(fuel_abs)+', ' + str(elec_abs) + ', ' +
+                    str(self.agent_type) + '\n')
         print(self.env_id, 'Completed iteration trips', trips, 'loss', loss, 'steps', self.steps, 'rush', rh_loss, 'dead', dh_loss)
         return penalized_loss
 
@@ -110,7 +113,7 @@ class TraciEnv(gym.Env):
         
         print(f'Current time: {self.sim.simulation.getTime()}, Trial: {self.trial_id}, Epoch: {self.eps_id}')
 
-        if self.sim.simulation.getTime() >= 55000: #55000!!!
+        if self.sim.simulation.getTime() >= 50000: #55000!!!
             reset = True
 
         actuation = False
@@ -354,6 +357,26 @@ class TraciEnv(gym.Env):
         diff = self.prev_score - curr_score
         self.prev_score = curr_score
         return diff
+    
+    def get_contamination(self, data_path):
+        tripinfos = ElementTree.parse(data_path+'tripinfo.xml').getroot().findall('tripinfo')
+        trips = 0
+
+        CO_abs, CO2_abs, HC_abs, PMx_abs, NOx_abs, fuel_abs, elec_abs = 0,0,0,0,0,0,0
+
+
+        for tripinfo in tripinfos:
+            emission = tripinfo.findall('emissions')[0]
+            CO_abs += float(emission.get('CO_abs'))
+            CO2_abs += float(emission.get('CO2_abs'))
+            HC_abs += float(emission.get('HC_abs'))
+            PMx_abs += float(emission.get('PMx_abs'))
+            NOx_abs += float(emission.get('NOx_abs'))
+            fuel_abs += float(emission.get('fuel_abs'))
+            elec_abs += float(emission.get('electricity_abs'))
+            trips+=1
+
+        return CO_abs/trips, CO2_abs/trips, HC_abs/trips, PMx_abs/trips, NOx_abs/trips, fuel_abs/trips, elec_abs/trips
 
     def get_delay(self, data_path):
         loss = 0.0

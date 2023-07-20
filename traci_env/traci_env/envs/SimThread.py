@@ -16,7 +16,8 @@ min_phase_time = 3 # the minimal time interval between signal change (including 
 def create_sim(sumoBinary, id, path):
     traci.start([sumoBinary,
                  "-c", path+'Data'+id+os.sep+"intersection.sumocfg",
-                 "--tripinfo-output", path+'Data'+id+os.sep+"tripinfo.xml"
+                 "--tripinfo-output", path+'Data'+id+os.sep+"tripinfo.xml",
+                 "--device.emissions.probability", "1.0"
                  ], label='sim' + id)
     return traci.getConnection('sim'+id)
 

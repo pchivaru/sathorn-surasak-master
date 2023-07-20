@@ -10,7 +10,7 @@ import time
 
 def main():
     optParser = optparse.OptionParser()
-    optParser.add_option("--agent", action="store", default='dqn', help="actu, dqn, dqnpq, drsq, drhq, rppo")
+    optParser.add_option("--agent", action="store", default='actu', help="actu, dqn, dqnpq, drsq, drhq, rppo")
     optParser.add_option("--file", action="store", default='0', type='int', help="demand file index (0-2)")
     optParser.add_option("--trials", action="store", default='1', type='int', help="number of trials") #30
     optParser.add_option("--eps", action="store", default='1', type='int', help="number of episodes per trial") #40
