@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-07-21 18:41:41 by Eclipse SUMO sumo Version 1.17.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="Data0-0\intersection.net.xml"/>
+        <route-files value="Data0-0\intersection.rou.xml"/>
+        <additional-files value="Data0-0\intersection.det.xml"/>
+    </input>
+
+    <output>
+        <tripinfo-output value="Data0-0\tripinfo.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+    </time>
+
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="60000"/>
+    </processing>
+
+    <report>
+        <verbose value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <emissions>
+        <device.emissions.probability value="1.0"/>
+    </emissions>
+
+    <traci_server>
+        <remote-port value="63620"/>
+    </traci_server>
+
+    <gui_only>
+        <gui-settings-file value="Data0-0\intersection.settings.xml"/>
+    </gui_only>
+
+</configuration>
+-->
+
+<detector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/det_e2_file.xsd">
+   <interval begin="0.00" end="100.00" id="laneAreaDetector.S1" sampledSeconds="188.88" nVehEntered="9" nVehLeft="4" nVehSeen="9" meanSpeed="8.02" meanTimeLoss="8.78" meanOccupancy="4.77" maxOccupancy="15.00" meanMaxJamLengthInVehicles="0.56" meanMaxJamLengthInMeters="3.63" maxJamLengthInVehicles="3" maxJamLengthInMeters="20.02" jamLengthInVehiclesSum="56" jamLengthInMetersSum="362.62" meanHaltingDuration="10.33" maxHaltingDuration="18.00" haltingDurationSum="62.00" meanIntervalHaltingDuration="10.33" maxIntervalHaltingDuration="18.00" intervalHaltingDurationSum="62.00" startedHalts="6.00" meanVehicleNumber="1.94" maxVehicleNumber="6" />
+</detector>

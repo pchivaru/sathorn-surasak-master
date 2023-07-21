@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-07-21 18:41:41 by Eclipse SUMO sumo Version 1.17.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="Data0-0\intersection.net.xml"/>
+        <route-files value="Data0-0\intersection.rou.xml"/>
+        <additional-files value="Data0-0\intersection.det.xml"/>
+    </input>
+
+    <output>
+        <tripinfo-output value="Data0-0\tripinfo.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+    </time>
+
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="60000"/>
+    </processing>
+
+    <report>
+        <verbose value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <emissions>
+        <device.emissions.probability value="1.0"/>
+    </emissions>
+
+    <traci_server>
+        <remote-port value="63620"/>
+    </traci_server>
+
+    <gui_only>
+        <gui-settings-file value="Data0-0\intersection.settings.xml"/>
+    </gui_only>
+
+</configuration>
+-->
+
+<detector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/det_e2_file.xsd">
+   <interval begin="0.00" end="100.00" id="FlaneAreaDetector.W3" sampledSeconds="129.00" nVehEntered="13" nVehLeft="9" nVehSeen="13" meanSpeed="10.32" meanTimeLoss="2.93" meanOccupancy="0.83" maxOccupancy="2.56" meanMaxJamLengthInVehicles="0.32" meanMaxJamLengthInMeters="1.60" maxJamLengthInVehicles="1" maxJamLengthInMeters="5.00" jamLengthInVehiclesSum="32" jamLengthInMetersSum="160.00" meanHaltingDuration="33.00" maxHaltingDuration="33.00" haltingDurationSum="33.00" meanIntervalHaltingDuration="33.00" maxIntervalHaltingDuration="33.00" intervalHaltingDurationSum="33.00" startedHalts="1.00" meanVehicleNumber="1.29" maxVehicleNumber="4" />
+</detector>
