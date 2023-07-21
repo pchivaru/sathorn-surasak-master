@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import operator
+import pickle
 
 
 """Taken from OpenAI baselines codebase"""
@@ -29,6 +30,17 @@ class ReplayBuffer(object):
         else:
             self._storage[self._next_idx] = data
         self._next_idx = (self._next_idx + 1) % self._maxsize
+
+    def save(self, file):
+        with open(file, 'wb') as replay_buffer_file:  
+            pickle.dump(self._storage, replay_buffer_file)
+
+    def load(self, file):
+        with open(file, 'rb') as replay_buffer_file:  
+            self._storage = pickle.load(replay_buffer_file)
+
+        self._next_idx = len(self._storage) % self._maxsize
+
 
     def _encode_sample(self, idxes):
         obses_t, actions, rewards, obses_tp1, dones = [], [], [], [], []

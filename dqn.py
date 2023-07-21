@@ -2,7 +2,7 @@ import random
 import os
 from networks import DQNNet
 from replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
-from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE
+from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE, EXPLORE
 
 
 class Agent(object):
@@ -21,15 +21,18 @@ class Agent(object):
         self.last_change = 0
 
         self.ep = 1
-        self.explore = 5
+        self.explore = EXPLORE
 
     def load(self, env_id):
         self.trainer.load('Data'+env_id+os.sep+'policy.net')
         self.target.model.set_weights(self.trainer.model.get_weights())
+
+        self.replay.load('Data'+env_id+os.sep+'replay.buffer')
         print('loaded from ' + env_id)
 
     def episode_end(self, env_id):
         self.trainer.save('Data'+env_id+os.sep+'policy.net')
+        self.replay.save('Data'+env_id+os.sep+'replay.buffer')
         self.prev_action = None
         self.prev_state = None
         self.last_change = 0
@@ -40,7 +43,8 @@ class Agent(object):
     def act(self, state, reward, done):
         if self.prev_action is not None:
             self.replay.add(self.prev_state, self.prev_action, reward, state, done)
-            if len(self.replay) > BATCH_SIZE * 2: self.train()
+            if len(self.replay) > BATCH_SIZE * 2: 
+                self.train()
             self.last_change += 1
             if self.last_change == UPDATE_RATE:
                 self.target.model.set_weights(self.trainer.model.get_weights())
