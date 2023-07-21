@@ -1,5 +1,6 @@
 import random
 import os
+import re
 from networks import DQNNet
 from replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
 from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE, EXPLORE
@@ -14,7 +15,7 @@ class Agent(object):
         self.target = DQNNet(obs_shape, self.num_actions, learning_rate=0.001)
 
         self.replay = ReplayBuffer(100000)# ALPHA
-        self.beta = 95
+        self.beta = 95 #???
 
         self.prev_state = None
         self.prev_action = None
@@ -28,6 +29,11 @@ class Agent(object):
         self.target.model.set_weights(self.trainer.model.get_weights())
 
         self.replay.load('Data'+env_id+os.sep+'replay.buffer')
+        
+        results = re.search(r'(\d+)-(\d+)', env_id)
+        eps_0 = int(results[2]) 
+        self.ep = eps_0+1
+
         print('loaded from ' + env_id)
 
     def episode_end(self, env_id):
