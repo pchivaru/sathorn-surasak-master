@@ -12,7 +12,7 @@ import re
 
 def main():
     optParser = optparse.OptionParser()
-    optParser.add_option("--agent", action="store", default='dqn', help="actu, dqn, dqnpq, drsq, drhq, rppo")
+    optParser.add_option("--agent", action="store", default='actu', help="actu, dqn, dqnpq, drsq, drhq, rppo")
     optParser.add_option("--file", action="store", default='0', type='int', help="demand file index (0-2)")
     optParser.add_option("--trials", action="store", default='1', type='int', help="number of trials") #30
     optParser.add_option("--eps", action="store", default='40', type='int', help="number of episodes per trial") #40
@@ -24,7 +24,7 @@ def main():
 
     if options.agent == 'actu':
         num_eps = 1
-        num_trials = 1
+        num_trials = 30 #30
     else:
         num_eps = options.eps
         num_trials = options.trials

@@ -120,7 +120,6 @@ class TraciEnv(gym.Env):
         if action >= 100:   # Actuated action
             action -= 100
             phase = self.get_phase_from_action(action)
-            print('Phase:', phase)
             actuation = True
         else:
             phase = self.get_phase_from_action(action)
@@ -385,6 +384,11 @@ class TraciEnv(gym.Env):
         trips = len(tripinfos)
         rh_trips, rh_loss, dh_trips, dh_loss = 0, 0, 0, 0
         max_delay = 0
+
+        ranges = list(range(0,50000,600))
+        trips_bins = np.zeros(len(ranges))
+        loss_bins = np.zeros(len(ranges))
+
         for tripinfo in tripinfos:
             trip_loss = float(tripinfo.get('timeLoss'))
             if trip_loss > max_delay:
@@ -393,16 +397,25 @@ class TraciEnv(gym.Env):
             loss_sq += trip_loss ** 2
 
             departed = float(tripinfo.get('depart'))
+
+            departed_idx = int(departed // 600)
+            trips_bins[departed_idx] += 1
+            loss_bins[departed_idx] += trip_loss
+            
             if departed >= self.rush_hour and departed <= self.rush_hour+3600:
                 rh_loss += trip_loss
                 rh_trips += 1
             if departed >= self.dead_hour and departed <= self.dead_hour+3600:
                 dh_loss += trip_loss
                 dh_trips += 1
-        if trips == 0: return 0, 0, 0, 0, 0, 0
+  
+        if trips == 0: return 0, 0, 0, 0, 0, 0, []
         if rh_trips == 0 or dh_trips == 0:
-            return loss / trips, loss_sq / trips, trips, 0, 0, max_delay
-        return loss / trips, loss_sq / trips, trips, rh_loss / rh_trips, dh_loss / rh_trips, max_delay
+            return loss / trips, loss_sq / trips, trips, 0, 0, max_delay, []
+        
+        mean_loss_bins = loss_bins /trips_bins
+
+        return loss / trips, loss_sq / trips, trips, rh_loss / rh_trips, dh_loss / dh_trips, max_delay, mean_loss_bins
 
     def get_max_queue(self, data_path):
         max_queue = 0

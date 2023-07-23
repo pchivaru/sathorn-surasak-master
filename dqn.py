@@ -34,6 +34,9 @@ class Agent(object):
         eps_0 = int(results[2]) 
         self.ep = eps_0+1
 
+        if self.ep >= 20:
+            self.explore = 0
+
         print('loaded from ' + env_id)
 
     def episode_end(self, env_id):
@@ -47,6 +50,7 @@ class Agent(object):
             self.explore = 0
 
     def act(self, state, reward, done):
+        print(self.ep)
         if self.prev_action is not None:
             self.replay.add(self.prev_state, self.prev_action, reward, state, done)
             if len(self.replay) > BATCH_SIZE * 2: 
