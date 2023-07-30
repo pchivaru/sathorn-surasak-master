@@ -29,6 +29,8 @@ import time
 OBS_SPACE = spaces.Box(low=-np.inf, high=np.inf, dtype=np.float32, shape=(20, 5, 1))
 ACT_SPACE = spaces.Discrete(C.NUM_ACTIONS)
 
+MAX_TIME = 50000
+
 
 class SimInternal(object):
     def __init__(self, demand):
@@ -89,7 +91,7 @@ class TraciEnv(gym.Env):
 
     def close(self):
         self.sim.close()
-        loss, loss_sq, trips, rh_loss, dh_loss, max_delay = self.get_delay('Data'+self.env_id+os.sep)
+        loss, loss_sq, trips, rh_loss, dh_loss, max_delay, mean_loss_bins = self.get_delay('Data'+self.env_id+os.sep)
         CO_abs, CO2_abs, HC_abs, PMx_abs, NOx_abs, fuel_abs, elec_abs = self.get_contamination('Data'+self.env_id+os.sep)
         missed_trips = self.sim_intern.vehNr - trips
         if missed_trips > 0:
@@ -98,13 +100,25 @@ class TraciEnv(gym.Env):
 
         max_queue = self.get_max_queue('Data'+self.env_id+os.sep)
 
+        #df_results = pd.read_csv('results.csv')
+
         with open("results.csv", "a+") as f:
             f.write(str(self.trial_id) + ', ' + str(self.eps_id) + ', ' + str(trips) + ', ' + str(missed_trips) + ', ' +
                     str(loss) + ', ' + str(self.steps) + ', ' + str(rh_loss) + ', ' + str(dh_loss) + ', ' +
                     str(max_delay) + ', ' + str(max_queue) + ', '+ str(CO_abs) + ', ' + str(CO2_abs) + ', '+
                     str(HC_abs)+', '+str(PMx_abs)+', '+str(NOx_abs)+', '+str(fuel_abs)+', ' + str(elec_abs) + ', ' +
                     str(self.agent_type) + '\n')
+            
         print(self.env_id, 'Completed iteration trips', trips, 'loss', loss, 'steps', self.steps, 'rush', rh_loss, 'dead', dh_loss)
+
+        df_delay_records = pd.read_csv('delay_records.csv')
+        print('Mean_loss_bins:', mean_loss_bins)
+        print([self.trial_id, self.eps_id, self.agent_type]+ list(mean_loss_bins))
+        print(df_delay_records.columns)
+        new_row = pd.DataFrame([[self.trial_id, self.eps_id, self.agent_type]+ list(mean_loss_bins)], columns=df_delay_records.columns)
+        df_delay_records = pd.concat([df_delay_records, new_row], ignore_index=True)
+        df_delay_records.to_csv('delay_records.csv', index=False)
+
         return penalized_loss
 
     def step(self, action):
@@ -113,7 +127,7 @@ class TraciEnv(gym.Env):
         
         print(f'Current time: {self.sim.simulation.getTime()}, Trial: {self.trial_id}, Epoch: {self.eps_id}, Step: {self.steps}')
 
-        if self.sim.simulation.getTime() >= 50000: #55000!!!
+        if self.sim.simulation.getTime() >= MAX_TIME: #55000!!!
             reset = True
 
         actuation = False
@@ -385,7 +399,7 @@ class TraciEnv(gym.Env):
         rh_trips, rh_loss, dh_trips, dh_loss = 0, 0, 0, 0
         max_delay = 0
 
-        ranges = list(range(0,50000,600))
+        ranges = list(range(0,MAX_TIME,600))
         trips_bins = np.zeros(len(ranges))
         loss_bins = np.zeros(len(ranges))
 
@@ -410,10 +424,13 @@ class TraciEnv(gym.Env):
                 dh_trips += 1
   
         if trips == 0: return 0, 0, 0, 0, 0, 0, []
-        if rh_trips == 0 or dh_trips == 0:
-            return loss / trips, loss_sq / trips, trips, 0, 0, max_delay, []
-        
+
         mean_loss_bins = loss_bins /trips_bins
+
+        if rh_trips == 0 or dh_trips == 0:
+            return loss / trips, loss_sq / trips, trips, 0, 0, max_delay, mean_loss_bins
+        
+        
 
         return loss / trips, loss_sq / trips, trips, rh_loss / rh_trips, dh_loss / dh_trips, max_delay, mean_loss_bins
 
