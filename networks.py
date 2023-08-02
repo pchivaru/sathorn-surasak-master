@@ -13,27 +13,7 @@ from scipy.special import softmax
 CLIPRANGE = 0.2
 E_MARGIN = 0.8
 
-""" Uses OpenAI baselines loss function """
-def ppo_loss(advantage, old_prob):
-    def loss(action, new_prob):
-        old_neglogp = K.sparse_categorical_crossentropy(target=action, output=old_prob)
-        new_neglogp = K.sparse_categorical_crossentropy(target=action, output=new_prob)
-
-        # Calculate ratio (pi current policy / pi old policy)
-        ratio = K.exp(old_neglogp - new_neglogp)
-
-        # Defining Loss = - J is equivalent to max J
-        pg_losses = -advantage * ratio
-
-        pg_losses2 = -advantage * K.clip(ratio, 1.0 - CLIPRANGE, 1.0 + CLIPRANGE)
-
-        # Final PG loss
-        return K.mean(K.maximum(pg_losses, pg_losses2))
-    return loss
-
-
 keras.losses.huber_loss = tf.losses.Huber
-keras.losses.ppo_loss = ppo_loss
 
 
 class DesignedLayer(keras.layers.Layer):

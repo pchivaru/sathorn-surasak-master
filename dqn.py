@@ -1,6 +1,7 @@
 import random
 import os
 import re
+import numpy as np
 from networks import DQNNet
 from replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
 from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE, EXPLORE
@@ -22,7 +23,7 @@ class Agent(object):
         self.last_change = 0
 
         self.ep = 1
-        self.explore = EXPLORE
+        self.explore = np.e**(-EXPLORE*(self.ep-1))
 
     def load(self, env_id):
         self.trainer.load('Data'+env_id+os.sep+'policy.net')
@@ -46,11 +47,13 @@ class Agent(object):
         self.prev_state = None
         self.last_change = 0
         self.ep += 1
+        self.explore = np.e**(-EXPLORE*(self.ep-1))
+        print('New epsilon:', self.explore)
         if self.ep == 20:
             self.explore = 0
 
     def act(self, state, reward, done):
-        print(self.ep)
+        #print(self.ep)
         if self.prev_action is not None:
             self.replay.add(self.prev_state, self.prev_action, reward, state, done)
             if len(self.replay) > BATCH_SIZE * 2: 
@@ -60,10 +63,12 @@ class Agent(object):
                 self.target.model.set_weights(self.trainer.model.get_weights())
                 self.last_change = 0
 
-        if random.uniform(0, 100) < self.explore:
+        if random.uniform(0, 1) < self.explore:
             action = random.choice(range(self.num_actions))
-        else:
+            print('Random action', action)
+        else:            
             action = self.trainer.best_action(state)
+            print('Best action', action)
 
         self.prev_state = state
         self.prev_action = action

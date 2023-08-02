@@ -44,7 +44,7 @@ class SimInternal(object):
         self.acted = False
         self.conflict_red_count = 0
         self.barrier_red_count = 0
-        self.vehicle_register = pd.DataFrame(0, index=np.arange(MAX_TIME+1), 
+        self.vehicle_register = pd.DataFrame(0, index=np.arange(MAX_TIME+180), 
                                              columns=["Eastbound.L", "Eastbound.T", "Southbound.L", "Southbound.R", 
                                                       "Westbound.T", 'Northbound.TR', 'Northbound.TL', "Northbound.R"])
 

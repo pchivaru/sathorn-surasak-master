@@ -89,6 +89,7 @@ def run_trial(agent_type, file, num_eps, trial, colab, eps_0=0, render=False):
                 print(agent.replay._storage[50])'''
 
             state, rew, reset, _ = env.step(action=agent.act(state, rew, reset))
+            #print('Epsilon:', agent.explore)
             
         
         agent.episode_end(env.env_id)                                                                                               
