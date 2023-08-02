@@ -29,7 +29,7 @@ import time
 OBS_SPACE = spaces.Box(low=-np.inf, high=np.inf, dtype=np.float32, shape=(20, 5, 1))
 ACT_SPACE = spaces.Discrete(C.NUM_ACTIONS)
 
-MAX_TIME = 50000
+MAX_TIME = 86399 #1 day (86400s)
 
 
 class SimInternal(object):
@@ -44,6 +44,9 @@ class SimInternal(object):
         self.acted = False
         self.conflict_red_count = 0
         self.barrier_red_count = 0
+        self.vehicle_register = pd.DataFrame(0, index=np.arange(MAX_TIME+1), 
+                                             columns=["Eastbound.L", "Eastbound.T", "Southbound.L", "Southbound.R", 
+                                                      "Westbound.T", 'Northbound.TR', 'Northbound.TL', "Northbound.R"])
 
 
 class TraciEnv(gym.Env):
@@ -88,6 +91,10 @@ class TraciEnv(gym.Env):
         self.upper_phase = Phase.E
         self.lower_phase = Phase.WL
         self.steps = 0
+        if self.agent_type == 'actu':
+            self.sim.trafficlight.setProgram('J21', '1_ACTUATED')
+        elif self.agent_type == 'static':
+            self.sim.trafficlight.setProgram('J21', '2_STATIC')
 
     def close(self):
         self.sim.close()
@@ -112,12 +119,14 @@ class TraciEnv(gym.Env):
         print(self.env_id, 'Completed iteration trips', trips, 'loss', loss, 'steps', self.steps, 'rush', rh_loss, 'dead', dh_loss)
 
         df_delay_records = pd.read_csv('delay_records.csv')
-        print('Mean_loss_bins:', mean_loss_bins)
-        print([self.trial_id, self.eps_id, self.agent_type]+ list(mean_loss_bins))
-        print(df_delay_records.columns)
+        #print('Mean_loss_bins:', mean_loss_bins)
+        #print([self.trial_id, self.eps_id, self.agent_type]+ list(mean_loss_bins))
+        #print(df_delay_records.columns)
         new_row = pd.DataFrame([[self.trial_id, self.eps_id, self.agent_type]+ list(mean_loss_bins)], columns=df_delay_records.columns)
         df_delay_records = pd.concat([df_delay_records, new_row], ignore_index=True)
         df_delay_records.to_csv('delay_records.csv', index=False)
+
+        self.sim_intern.vehicle_register.to_csv('vehicle_register.csv')
 
         return penalized_loss
 
@@ -130,11 +139,13 @@ class TraciEnv(gym.Env):
         if self.sim.simulation.getTime() >= MAX_TIME: #55000!!!
             reset = True
 
-        actuation = False
-        if action >= 100:   # Actuated action
+        actuation_or_static = False
+        if action >= 100:   # Actuated or static action
             action -= 100
+            if action >= 100:  # Static action
+                action -= 100
             phase = self.get_phase_from_action(action)
-            actuation = True
+            actuation_or_static = True
         else:
             phase = self.get_phase_from_action(action)
 
@@ -142,7 +153,7 @@ class TraciEnv(gym.Env):
         self.sim_intern.acted = False
         # Collect rewards from intermediate no-op states
         while not self.sim_intern.acted:
-            SimThread.run_sim(self.sim, self.sim_intern, phase, actuation)            
+            SimThread.run_sim(self.sim, self.sim_intern, phase, actuation_or_static)            
 
             rewards.append(self.get_waiting_reduction())
 

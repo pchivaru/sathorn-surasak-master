@@ -23,7 +23,7 @@ def create_sim(sumoBinary, id, path):
 
 
 def run_sim(conn, intern, next_phase, actuation):
-    if next_phase == -1:    # Native actuation
+    if next_phase == -1:    # Native actuation ???????
         intern.last_phase_change = conn.simulation.getTime()
         run_min_steps(conn, intern)
         intern.acted = True
@@ -34,7 +34,7 @@ def run_sim(conn, intern, next_phase, actuation):
         if sim_time % 5000 == 0:
             print(int(sim_time), 'seconds passed')
 
-        vehicles = vehicle_generator(sim_time, intern.demand)
+        vehicles, intern.vehicle_register = vehicle_generator(sim_time, intern.demand, intern.vehicle_register)
 
         for v in vehicles:
             conn.vehicle.add(str(intern.vehNr), v[0], typeID=v[1], departSpeed="max", departLane="best")
@@ -82,7 +82,7 @@ def run_min_steps(conn, intern):
         time = conn.simulation.getTime()
         if time % 5000 == 0:
             print(int(time), 'seconds passed')
-        vehicles = vehicle_generator(time, intern.demand)
+        vehicles, intern.vehicle_register = vehicle_generator(time, intern.demand, intern.vehicle_register)
         #print(vehicles)
         for v in vehicles:
             conn.vehicle.add(str(intern.vehNr), v[0], typeID=v[1], departSpeed="max", departLane="best")
@@ -90,7 +90,8 @@ def run_min_steps(conn, intern):
         conn.simulationStep()
 
 
-def vehicle_generator(time, demand):  # time in seconds and demand as a list of entries from the demand file
+def vehicle_generator(time, demand, veh_register):  # time in seconds and demand as a list of entries from the demand file
+    #print('Time generator:', time)
     interval = int(time / data_interval)
     if interval > 288:  # Out of demand data
         return []
@@ -114,9 +115,13 @@ def vehicle_generator(time, demand):  # time in seconds and demand as a list of 
         p = float(data[sensor]) / data_interval  # The probability of generating a vehicle per time step for each route in the current time interval
         if random.uniform(0, 1) < p:
             route = random.choices(sensor_routes[sensor], weights=weights[sensor])[0]
+            veh_register.loc[time][route] += 1
+            #print(veh_register.loc[time])
             vehicle = [route, "passenger"]
             vehicles.append(vehicle)
-    return vehicles
+
+    return vehicles, veh_register
+#, vehicles_register
 
 
 def set_phase(conn, indexes):

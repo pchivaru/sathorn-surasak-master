@@ -117,12 +117,21 @@
         <lane id="W_4" index="4" speed="13.89" length="783.20" shape="800.00,-1.60 16.80,-1.60"/>
     </edge>
 
-    <tlLogic id="J21" type="actuated" programID="1" offset="0">
+    <tlLogic id="J21" type="actuated" programID="1_ACTUATED" offset="0">
         <phase duration="27" state="rrrrGGGGGrrrrrrrGGGG" minDur="5" maxDur="50"/>
         <phase duration="3"  state="rrrrGyyyyrrrrrrryyyy"/>
         <phase duration="27" state="rrrrGrrrrgGGGgggrrrr" minDur="5" maxDur="50"/>
         <phase duration="3"  state="rrrrGrrrryyyyyyyrrrr"/>
         <phase duration="27" state="GGggGrrrrrrrrrrrrrrr" minDur="5" maxDur="50"/>
+        <phase duration="3"  state="yyyyGrrrrrrrrrrrrrrr"/>
+    </tlLogic>
+
+    <tlLogic id="J21" type="static" programID="2_STATIC" offset="0">
+        <phase duration="27" state="rrrrGGGGGrrrrrrrGGGG"/>
+        <phase duration="3"  state="rrrrGyyyyrrrrrrryyyy"/>
+        <phase duration="27" state="rrrrGrrrrgGGGgggrrrr"/>
+        <phase duration="3"  state="rrrrGrrrryyyyyyyrrrr"/>
+        <phase duration="27" state="GGggGrrrrrrrrrrrrrrr"/>
         <phase duration="3"  state="yyyyGrrrrrrrrrrrrrrr"/>
     </tlLogic>
 

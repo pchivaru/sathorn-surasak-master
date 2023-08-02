@@ -4,17 +4,20 @@ class Agent(object):
     MAX_DUR = 300
     MAX_GAP = 3
 
-    def __init__(self, obs_shape, num_actions):
-        self.num_actions = num_actions
-        self.curr_act = 100
-        self.last_change = 0
+    def __init__(self):
+        self.curr_act = 100  # Dummy action        
+        '''self.num_actions = num_actions
+        
+        self.last_change = 0'''
 
     def episode_end(self, env_id):
+        pass
+        '''
         self.curr_act = 100
-        self.last_change = 0
+        self.last_change = 0'''
 
     def act(self, state, reward, done):
-        #return -1  # turns on SUMO automatic control
+        '''#return -1  # turns on SUMO automatic control
         if reward != -1 and self.num_actions != 3:
             print('Auto change')
             self.curr_act = reward
@@ -33,5 +36,5 @@ class Agent(object):
             elif self.curr_act == 107:
                 self.curr_act = 101
             elif self.curr_act == 101:
-                self.curr_act = 100
+                self.curr_act = 100'''
         return self.curr_act
