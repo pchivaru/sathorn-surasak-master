@@ -13,7 +13,7 @@ import re
 
 def main():
     optParser = optparse.OptionParser()
-    optParser.add_option("--agent", action="store", default='dqn', help="actu, static, dqn")
+    optParser.add_option("--agent", action="store", default='dqn_egreedy_const', help="actu, static, dqn_egreedy_exp, dqn_egreedy_const")
     optParser.add_option("--file", action="store", default='0', type='int', help="demand file index (0-2)")
     optParser.add_option("--trials", action="store", default='1', type='int', help="number of trials") #30
     optParser.add_option("--eps", action="store", default='40', type='int', help="number of episodes per trial") #40
@@ -51,11 +51,16 @@ def run_trial(agent_type, file, num_eps, trial, colab, eps_0=0, render=False):
         agent = ActuatedAgent()
     elif agent_type == 'static':
         agent = StaticAgent()
-    elif agent_type == 'dqn':
+    elif agent_type == 'dqn_egreedy_exp':
         agent = DQNAgent(shared.OBS_SPACE, shared.ACT_SPACE, 'egreedy_exp')
         if eps_0 != 0:
             #load the previous model weights and replay buffer!
-            agent.load(str(trial)+'-'+str(eps_0-1))  
+            agent.load(str(trial)+'-'+str(eps_0-1))
+    elif agent_type == 'dqn_egreedy_const':
+        agent = DQNAgent(shared.OBS_SPACE, shared.ACT_SPACE, 'egreedy_const')
+        if eps_0 != 0:
+            #load the previous model weights and replay buffer!
+            agent.load(str(trial)+'-'+str(eps_0-1))   
     else:
         raise ValueError('Invalid agent type')
 
