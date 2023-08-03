@@ -52,7 +52,7 @@ def run_trial(agent_type, file, num_eps, trial, colab, eps_0=0, render=False):
     elif agent_type == 'static':
         agent = StaticAgent()
     elif agent_type == 'dqn':
-        agent = DQNAgent(shared.OBS_SPACE, shared.ACT_SPACE)
+        agent = DQNAgent(shared.OBS_SPACE, shared.ACT_SPACE, 'egreedy_exp')
         if eps_0 != 0:
             #load the previous model weights and replay buffer!
             agent.load(str(trial)+'-'+str(eps_0-1))  

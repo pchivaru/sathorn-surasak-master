@@ -93,8 +93,8 @@ def run_min_steps(conn, intern):
 def vehicle_generator(time, demand, veh_register):  # time in seconds and demand as a list of entries from the demand file
     #print('Time generator:', time)
     interval = int(time / data_interval)
-    if interval > 288:  # Out of demand data
-        return []
+    if interval > 287:  # Out of demand data
+        return [], veh_register
 
 
     sensor_routes = {'E1': ["Eastbound.L", "Eastbound.T"],

@@ -4,12 +4,12 @@ import re
 import numpy as np
 from networks import DQNNet
 from replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
-from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE, EXPLORE
+from shared import DISCOUNT, BATCH_SIZE, UPDATE_RATE, EXPLORE, EPSILON
 
 
 class Agent(object):
 
-    def __init__(self, obs_shape, num_actions):
+    def __init__(self, obs_shape, num_actions, action_method):
         self.num_actions = num_actions
 
         self.trainer = DQNNet(obs_shape, self.num_actions, learning_rate=0.001)
@@ -22,8 +22,13 @@ class Agent(object):
         self.prev_action = None
         self.last_change = 0
 
+        self.action_method = action_method
+
         self.ep = 1
-        self.explore = np.e**(-EXPLORE*(self.ep-1))
+        if self.action_method == 'egreedy_exp':
+            self.explore = np.e**(-EXPLORE*(self.ep-1))
+        elif self.action_method == 'egreedy_const':
+            self.explore = EPSILON
 
     def load(self, env_id):
         self.trainer.load('Data'+env_id+os.sep+'policy.net')
@@ -47,9 +52,10 @@ class Agent(object):
         self.prev_state = None
         self.last_change = 0
         self.ep += 1
-        self.explore = np.e**(-EXPLORE*(self.ep-1))
+        if self.action_method == 'egreedy_exp':
+            self.explore = np.e**(-EXPLORE*(self.ep-1))
         print('New epsilon:', self.explore)
-        if self.ep == 20:
+        if self.ep >= 20:
             self.explore = 0
 
     def act(self, state, reward, done):
