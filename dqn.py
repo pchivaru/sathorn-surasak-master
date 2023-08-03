@@ -40,6 +40,9 @@ class Agent(object):
         eps_0 = int(results[2]) 
         self.ep = eps_0+1
 
+        if self.action_method == 'egreedy_exp':
+            self.explore = np.e**(-EXPLORE*(self.ep-1))
+
         if self.ep >= 20:
             self.explore = 0
 
