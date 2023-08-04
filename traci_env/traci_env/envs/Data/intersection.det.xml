@@ -42,26 +42,4 @@
     <inductionLoop id="inductionLoop.S2" lane="S_2" freq="100" pos="-27.78" file="inductionLoop.S2.xml"/>
     <inductionLoop id="inductionLoop.S3" lane="S_3" freq="100" pos="-27.78" file="inductionLoop.S3.xml"/>
 
-    
-    <laneAreaDetector id="FlaneAreaDetector.E0" lane="E_0" length="780" freq="100" pos="-780" file="FlaneAreaDetector.E0.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.E1" lane="E_1" length="780" freq="100" pos="-780" file="FlaneAreaDetector.E1.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.E2" lane="E_2" length="780" freq="100" pos="-780" file="FlaneAreaDetector.E2.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.E3" lane="E_3" length="780" freq="100" pos="-780" file="FlaneAreaDetector.E3.xml"/>
-
-    <laneAreaDetector id="FlaneAreaDetector.W0" lane="W_0" length="780" freq="100" pos="-780" file="FlaneAreaDetector.W0.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.W1" lane="W_1" length="780" freq="100" pos="-780" file="FlaneAreaDetector.W1.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.W2" lane="W_2" length="780" freq="100" pos="-780" file="FlaneAreaDetector.W2.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.W3" lane="W_3" length="780" freq="100" pos="-780" file="FlaneAreaDetector.W3.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.W4" lane="W_4" length="780" freq="100" pos="-780" file="FlaneAreaDetector.W4.xml"/>
-
-    <laneAreaDetector id="FlaneAreaDetector.N0" lane="N_0" length="780" freq="100" pos="-780" file="FlaneAreaDetector.N0.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.N1" lane="N_1" length="780" freq="100" pos="-780" file="FlaneAreaDetector.N1.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.N2" lane="N_2" length="780" freq="100" pos="-780" file="FlaneAreaDetector.N2.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.N3" lane="N_3" length="780" freq="100" pos="-780" file="FlaneAreaDetector.N3.xml"/>
-
-    <laneAreaDetector id="FlaneAreaDetector.S0" lane="S_0" length="780" freq="100" pos="-780" file="FlaneAreaDetector.S0.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.S1" lane="S_1" length="780" freq="100" pos="-780" file="FlaneAreaDetector.S1.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.S2" lane="S_2" length="780" freq="100" pos="-780" file="FlaneAreaDetector.S2.xml"/>
-    <laneAreaDetector id="FlaneAreaDetector.S3" lane="S_3" length="780" freq="100" pos="-780" file="FlaneAreaDetector.S3.xml"/>
-
 </additional>

@@ -6,7 +6,7 @@ NUM_ACTIONS = 11
 NUM_MEASUREMENTS = 14
 MAX_VEHICLES = 27
 MAX_SPEED = 16.67
-MAX_WAIT = 120  # Just an estimate of max waiting time to scale input
+MAX_WAIT = 300  # Just an estimate of max waiting time to scale input
 MIN_REW = 5
 
 """Parameters without command line input options"""

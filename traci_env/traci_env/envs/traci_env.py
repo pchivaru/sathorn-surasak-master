@@ -451,7 +451,7 @@ class TraciEnv(gym.Env):
         for phase in LAD:
             if cutoff == 6: break  # Use basic 6 detectors
             for lane in phase.value:
-                lad_file = data_path + 'F' + lane + '.xml'
+                lad_file = data_path + lane + '.xml'
                 intervals = ElementTree.parse(lad_file).getroot().findall('interval')
                 for interval in intervals:
                     maxJamLengthInVehicles = float(interval.get('maxJamLengthInVehicles'))
