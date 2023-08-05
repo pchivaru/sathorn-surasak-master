@@ -38,7 +38,7 @@ class Agent(object):
         
         results = re.search(r'(\d+)-(\d+)', env_id)
         eps_0 = int(results[2]) 
-        self.ep = eps_0+1
+        self.ep = eps_0+2
 
         if self.action_method == 'egreedy_exp':
             self.explore = np.e**(-EXPLORE*(self.ep-1))
